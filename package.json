@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc"
   },
   "keywords": [],
@@ -11,7 +12,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/es6-shim": "^0.31.45",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
