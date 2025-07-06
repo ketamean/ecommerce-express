@@ -31,7 +31,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table: user
 -- Stores user account information.
 CREATE TABLE "user" (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id SERIAL PRIMARY KEY,
+    user_id UUID DEFAULT uuid_generate_v4(),
     email VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
     name VARCHAR(255),
@@ -49,7 +50,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table: product
 -- Stores product information.
 CREATE TABLE product (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id SERIAL PRIMARY KEY,
+    product_id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
@@ -72,7 +74,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Stores URLs for product images, hosted on a service like S3.
 CREATE TABLE product_images (
     id SERIAL PRIMARY KEY,
-    product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES product(id) ON DELETE CASCADE,
     image_url VARCHAR(255) NOT NULL,
     alt_text VARCHAR(255),
     is_thumbnail BOOLEAN NOT NULL DEFAULT FALSE,
@@ -83,8 +85,9 @@ CREATE TABLE product_images (
 -- Table: cart
 -- Represents a user's shopping cart.
 CREATE TABLE cart (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL UNIQUE REFERENCES "user"(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    cart_id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+    user_id INTEGER NOT NULL UNIQUE REFERENCES "user"(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -100,8 +103,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- A join table listing the products within a specific cart.
 CREATE TABLE cart_details (
     id SERIAL PRIMARY KEY,
-    cart_id UUID NOT NULL REFERENCES cart(id) ON DELETE CASCADE,
-    product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    cart_id INTEGER NOT NULL REFERENCES cart(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES product(id) ON DELETE CASCADE,
     quantity INTEGER NOT NULL DEFAULT 1,
     status VARCHAR(50) DEFAULT 'active', -- e.g., 'active', 'saved_for_later'
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -113,10 +116,11 @@ CREATE TABLE cart_details (
 -- Table: order
 -- Stores high-level information for a completed order.
 CREATE TABLE "order" (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id SERIAL PRIMARY KEY,
+    order_id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
     -- MODIFIED: Changed ON DELETE SET NULL to ON DELETE CASCADE.
     -- Now, deleting a user will delete all their associated orders.
-    user_id UUID REFERENCES "user"(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
     total_amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) NOT NULL, -- e.g., 'pending', 'processed', 'shipped'
     shipping_address TEXT NOT NULL,
@@ -136,10 +140,10 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Details the specific products and quantities for each order.
 CREATE TABLE order_details (
     id SERIAL PRIMARY KEY,
-    order_id UUID NOT NULL REFERENCES "order"(id) ON DELETE CASCADE,
+    order_id INTEGER NOT NULL REFERENCES "order"(id) ON DELETE CASCADE,
     -- MODIFIED: Added ON DELETE CASCADE.
     -- Now, deleting a product will delete its corresponding order detail lines.
-    product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES product(id) ON DELETE CASCADE,
     quantity INTEGER NOT NULL,
     price_at_purchase DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
