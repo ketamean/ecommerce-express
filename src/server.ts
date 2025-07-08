@@ -1,20 +1,30 @@
 import express, { Request, Response } from 'express';
 // import 'express-async-errors';
-import dotenv from 'dotenv'; 
+import dotenv from 'dotenv';
+import * as bodyParser from "body-parser";
+import helmet from "helmet";
+import cors from "cors";
+import errorHandler from '@middlewares/errorHandler'
+import masterRouter from '@routes/index';
+
 dotenv.config();  // Load environment variables from .env file 
 
 const app = express();
 
-app.use(express.json());
+// set middlewares
+app.use(cors());
+app.use(helmet());
+app.use(bodyParser.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Server is up and running!');
+// health check
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).send('OK');
 });
 
-// Basic error handling
-app.use((err: Error, req: Request, res: Response) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+// main routes
+app.use(masterRouter);
+
+// set error handling
+app.use(errorHandler);
 
 export { app };
