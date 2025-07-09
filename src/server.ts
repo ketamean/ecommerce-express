@@ -1,30 +1,43 @@
 import express, { Request, Response } from 'express';
 // import 'express-async-errors';
-import dotenv from 'dotenv';
+
 import * as bodyParser from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
-import errorHandler from '@middlewares/errorHandler'
-import masterRouter from '@routes/index';
-
-dotenv.config();  // Load environment variables from .env file 
+import { buildSchema } from 'type-graphql';
+import errorHandler from '@middlewares/errorHandler';
 
 const app = express();
 
-// set middlewares
-app.use(cors());
-app.use(helmet());
-app.use(bodyParser.json());
+async function main() {
+  // set middlewares
+  app.use(cors());
+  app.use(helmet());
+  app.use(bodyParser.json());
 
-// health check
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).send('OK');
-});
+  // health check
+  app.get('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
 
-// main routes
-app.use(masterRouter);
+  // // graphql route
+  // const schema = await buildSchema({
+  //   resolvers: [ProductResolver], // Add other resolvers here
+  //   emitSchemaFile: true, // Optional: for generating schema.gql file
+  // });
 
-// set error handling
-app.use(errorHandler);
+  // app.use(
+  //   '/graphql',
+  //   graphqlHTTP({
+  //     schema: schema,
+  //     graphiql: true, // Enables the GraphiQL UI
+  //   }),
+  // );
+
+  // set error handling
+  app.use(errorHandler);
+}
+
+main();
 
 export { app };

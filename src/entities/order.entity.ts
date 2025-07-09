@@ -13,32 +13,32 @@ import { OrderDetail } from './order-detail.entity';
 @Entity('order')
 export class Order {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'uuid', generated: 'uuid' })
-  order_id: string;
+  order_id!: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  total_amount: number;
+  total_amount!: number;
 
   @Column()
-  status: string;
+  status!: string;
 
   @Column('text')
-  shipping_address: string;
+  shipping_address!: string;
 
   @Column({ unique: true, nullable: true })
-  payment_gateway_id: string;
+  payment_gateway_id!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @ManyToOne(() => User, (user) => user.orders, { onDelete: 'CASCADE' })
-  user: User;
+  user!: User;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
-  orderDetails: OrderDetail[];
+  orderDetails!: OrderDetail[];
 }

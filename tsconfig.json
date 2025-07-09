@@ -34,11 +34,10 @@
       "@/*": ["*"],
       "@utils/*": ["utils/*"],
       "@middlewares/*": ["middlewares/*"],
-      "@database/*": ["database/*"],
+      "@modules/*": ["core/modules/*"],
       "@config/*": ["config/*"],
-      "@routes/*": ["core/routes/*"],
-      "@controllers/*": ["core/controllers/*"],
-      "@services/*": ["core/services/*"],
+      "@entities/*": ["entities/*"],
+      "@repositories/*": ["core/repositories/*"],
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

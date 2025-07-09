@@ -15,40 +15,40 @@ import { OrderDetail } from './order-detail.entity';
 @Entity('product')
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'uuid', generated: 'uuid' })
-  product_id: string;
+  product_id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column('text', { nullable: true })
-  description: string;
+  description!: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  price: number;
+  price!: number;
 
   @Column('int', { default: 0 })
-  inventory_count: number;
+  inventory_count!: number;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @ManyToOne(() => Category, (category) => category.products, {
     onDelete: 'CASCADE',
   })
-  category: Category;
+  category!: Category;
 
   @OneToMany(() => ProductImage, (image) => image.product)
-  images: ProductImage[];
+  images!: ProductImage[];
 
   @OneToMany(() => CartDetail, (cartDetail) => cartDetail.product)
-  cartDetails: CartDetail[];
+  cartDetails!: CartDetail[];
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
-  orderDetails: OrderDetail[];
+  orderDetails!: OrderDetail[];
 }

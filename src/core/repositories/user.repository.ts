@@ -1,5 +1,5 @@
 // import { Repository } from "typeorm";
-import { User } from "@database/entities/user.entity";
+import { User } from "@/entities/user.entity";
 import { BaseRepository } from "./base.repository";
 import AppDataSource from "@config/database/typeorm";
 

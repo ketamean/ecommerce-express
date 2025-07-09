@@ -12,27 +12,27 @@ import { Product } from './product.entity';
 @Entity('order_details')
 export class OrderDetail {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column('int')
-  quantity: number;
+  quantity!: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  price_at_purchase: number;
+  price_at_purchase!: number;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @ManyToOne(() => Order, (order) => order.orderDetails, {
     onDelete: 'CASCADE',
   })
-  order: Order;
+  order!: Order;
 
   @ManyToOne(() => Product, (product) => product.orderDetails, {
     onDelete: 'CASCADE',
   })
-  product: Product;
+  product!: Product;
 }

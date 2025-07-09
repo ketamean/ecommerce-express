@@ -11,22 +11,22 @@ import { Product } from './product.entity';
 @Entity('cart_details')
 export class CartDetail {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column('int', { default: 1 })
-  quantity: number;
+  quantity!: number;
 
   @Column({ default: 'active' })
-  status: string;
+  status!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @ManyToOne(() => Cart, (cart) => cart.cartDetails, { onDelete: 'CASCADE' })
-  cart: Cart;
+  cart!: Cart;
 
   @ManyToOne(() => Product, (product) => product.cartDetails, {
     onDelete: 'CASCADE',
   })
-  product: Product;
+  product!: Product;
 }
