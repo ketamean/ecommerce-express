@@ -3,17 +3,17 @@ import { InputType, Field, Float, Int } from 'type-graphql';
 @InputType()
 export class ProductInput {
   @Field()
-  name: string;
+  name!: string;
 
   @Field({ nullable: true })
-  description: string;
+  description!: string;
 
   @Field(() => Float)
-  price: number;
+  price!: number;
 
   @Field(() => Int)
-  inventory_count: number;
+  inventory_count!: number;
 
   @Field(() => Int, { nullable: true })
-  categoryId: number;
+  categoryId!: number;
 }

@@ -1,19 +1,28 @@
 import express, { Request, Response } from 'express';
 // import 'express-async-errors';
 
-import * as bodyParser from "body-parser";
+import { json } from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
-import { buildSchema } from 'type-graphql';
 import errorHandler from '@middlewares/errorHandler';
+import { graphqlServer } from '@config/graphql';
+import { expressMiddleware } from '@apollo/server/express4';
 
 const app = express();
 
 async function main() {
+  const server = await graphqlServer()
   // set middlewares
-  app.use(cors());
-  app.use(helmet());
-  app.use(bodyParser.json());
+  app.use(
+    '/api',
+    cors(),
+    helmet(),
+    json(),
+    (req:Request, res:Response, next:Function) => {
+      console.log(req)
+    },
+    expressMiddleware(server) as any,
+  );
 
   // health check
   app.get('/health', (req: Request, res: Response) => {

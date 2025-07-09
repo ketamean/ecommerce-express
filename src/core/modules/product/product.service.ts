@@ -1,4 +1,4 @@
-import AppDataSource from '@config/database/typeorm'; // Assuming you have an AppDataSource configured
+import AppDataSource from '@config/database/typeorm';
 import { Product } from '@entities/product.entity';
 import { Repository } from 'typeorm';
 

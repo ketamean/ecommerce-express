@@ -1,7 +1,7 @@
 // src/middlewares/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { verifyAccessToken, verifyRefreshToken, generateAccessToken, generateRefreshToken } from '@utils/jwt';
-import redisClient from '../config/redis';
+import redisClient from '../config/database/redis';
 
 interface AuthenticatedRequest extends Request {
   user?: {

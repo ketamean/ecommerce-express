@@ -4,29 +4,29 @@ import { CategoryType } from '@modules/category/category.type';
 @ObjectType()
 export class Product {
   @Field(() => ID)
-  id: number;
+  id!: number;
 
   @Field()
-  product_id: string;
+  product_id!: string;
 
   @Field()
-  name: string;
+  name!: string;
 
   @Field({ nullable: true })
-  description: string;
+  description!: string;
 
   @Field(() => Float)
-  price: number;
+  price!: number;
 
   @Field(() => Int)
-  inventory_count: number;
+  inventory_count!: number;
 
   @Field(() => CategoryType, { nullable: true })
-  category: CategoryType;
+  category!: CategoryType;
 
   @Field()
-  created_at: Date;
+  created_at!: Date;
 
   @Field()
-  updated_at: Date;
+  updated_at!: Date;
 }

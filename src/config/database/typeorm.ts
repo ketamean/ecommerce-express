@@ -15,8 +15,6 @@ dotenv.config();  // Load environment variables from .env file
 const db_url = process.env.DB_URL || ''
 const is_dev = process.env.NODE_ENV === 'development' || false;
 
-console.log(`Database URL: ${db_url}`);
-
 const AppDataSource = new DataSource({
   type: 'postgres',
   url: db_url,
