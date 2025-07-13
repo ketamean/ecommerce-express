@@ -1,33 +1,39 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 // import 'express-async-errors';
 
 import { json } from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
-import errorHandler from '@middlewares/errorHandler';
-import { graphqlServer } from '@config/graphql';
-import { expressMiddleware } from '@as-integrations/express5';
+import errorHandler from "@middlewares/errorHandler";
+import { graphqlServer } from "@config/graphql";
+import { expressMiddleware } from "@as-integrations/express5";
+import { GraphQLContext } from "@modules/user/context";
+import authRoutes from "./routes/auth.routes";
 
 const app = express();
 
 async function main() {
-  const server = await graphqlServer()
+  const server = await graphqlServer();
   // set middlewares for /api/* path
   app.use(
-    '/api',
+    "/api",
     cors(),
     helmet(),
     json(),
-    // (req:Request, res:Response, next:Function) => {
-    //   console.log(req)
-    // },
-    expressMiddleware(server),
+    expressMiddleware(server, {
+      context: async ({ req }): Promise<GraphQLContext> => {
+        return { req };
+      },
+    })
   );
 
   // health check
-  app.get('/health', (req: Request, res: Response) => {
-    res.status(200).send('OK');
+  app.get("/health", (req: Request, res: Response) => {
+    res.status(200).send("OK");
   });
+
+  // Auth routes
+  app.use("/auth", authRoutes);
 
   // // graphql route
   // const schema = await buildSchema({
