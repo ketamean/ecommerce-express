@@ -12,15 +12,15 @@ const app = express();
 
 async function main() {
   const server = await graphqlServer()
-  // set middlewares
+  // set middlewares for /api/* path
   app.use(
     '/api',
     cors(),
     helmet(),
     json(),
-    (req:Request, res:Response, next:Function) => {
-      console.log(req)
-    },
+    // (req:Request, res:Response, next:Function) => {
+    //   console.log(req)
+    // },
     expressMiddleware(server) as any,
   );
 

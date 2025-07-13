@@ -1,7 +1,6 @@
 import 'reflect-metadata'; // Must be imported first
 import express from 'express';
-import { ApolloServer } from '@apollo/server';
-import { ApolloGateway } from '@apollo/gateway/dist';
+import { ApolloServer } from 'apollo-server';
 import { buildSchema } from 'type-graphql';
 import { ProductResolver } from '@modules/product/product.resolver' // './resolvers/product.resolver';
 
@@ -15,7 +14,7 @@ export async function graphqlServer() {
     schema,
   });
 
-  await server.start();
+  await server.listen();
 
   return server
 };
