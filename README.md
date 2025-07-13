@@ -5,8 +5,10 @@ A comprehensive e-commerce backend API built with Node.js, Express, TypeScript, 
 ## Features
 
 - **User Management**: Registration, login, profile management, password changes
-- **Product Management**: CRUD operations for products with pagination
-- **Authentication & Authorization**: JWT-based authentication with refresh tokens
+- **Product Management**: CRUD operations for products with pagination and search
+- **Category Management**: Full CRUD operations for product categories (admin-only)
+- **Search & Filtering**: Advanced search with category filtering for products
+- **Authentication & Authorization**: JWT-based authentication with refresh tokens and role-based access
 - **GraphQL API**: Modern GraphQL endpoint for efficient data fetching
 - **Database**: PostgreSQL with TypeORM for data persistence
 - **Redis**: Caching and token blacklisting
@@ -63,6 +65,12 @@ cp .env.example .env
 
 ```bash
 npm run dev
+```
+
+6. (Optional) Seed sample categories and products
+
+```bash
+npm run seed:categories
 ```
 
 ## API Documentation
@@ -291,7 +299,105 @@ Variables:
 }
 ```
 
-### Authentication
+### Category Management
+
+The API provides comprehensive category management with admin protection. See [CATEGORY_API.md](./CATEGORY_API.md) for detailed documentation.
+
+#### Public Category Operations
+
+- Get all categories with pagination
+- Get category by ID or name
+- Search categories by name/description
+- Get products by category
+- Search products with category filtering
+
+#### Admin-Only Category Operations
+
+- Create new categories
+- Update existing categories
+- Delete categories (with protection for categories that have products)
+
+#### Example: Get All Categories
+
+```graphql
+query GetCategories {
+  categories(page: 1, limit: 10) {
+    id
+    name
+    description
+    created_at
+    updated_at
+  }
+}
+```
+
+#### Example: Create Category (Admin Only)
+
+```graphql
+mutation CreateCategory($data: CategoryInput!) {
+  createCategory(data: $data) {
+    id
+    name
+    description
+    created_at
+    updated_at
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "data": {
+    "name": "Electronics",
+    "description": "Electronic devices and gadgets"
+  }
+}
+```
+
+Headers:
+
+```json
+{
+  "Authorization": "Bearer <admin_access_token>"
+}
+```
+
+### Product Search with Categories
+
+#### Search Products by Category
+
+```graphql
+query SearchProducts($searchTerm: String!, $categoryId: Int) {
+  searchProducts(
+    searchTerm: $searchTerm
+    page: 1
+    limit: 10
+    categoryId: $categoryId
+  ) {
+    id
+    name
+    description
+    price
+    category {
+      id
+      name
+    }
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "searchTerm": "smartphone",
+  "categoryId": 1
+}
+```
+
+#### Authentication
 
 #### Refresh Token (REST Endpoint)
 

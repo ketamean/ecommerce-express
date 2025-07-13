@@ -1,6 +1,6 @@
-import AppDataSource from '@config/database/typeorm';
-import { Product } from '@entities/product.entity';
-import { Repository } from 'typeorm';
+import AppDataSource from "@config/database/typeorm";
+import { Product } from "@entities/product.entity";
+import { Repository } from "typeorm";
 
 export class ProductService {
   private productRepository: Repository<Product>;
@@ -9,17 +9,23 @@ export class ProductService {
     this.productRepository = AppDataSource.getRepository(Product);
   }
 
-  async findAll(page: number = 1, limit: number = 10): Promise<[Product[], number]> {
+  async findAll(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<[Product[], number]> {
     const skip = (page - 1) * limit;
     return this.productRepository.findAndCount({
       skip,
       take: limit,
-      relations: ['category'],
+      relations: ["category"],
     });
   }
 
   async findById(id: number): Promise<Product | null> {
-    return this.productRepository.findOne({ where: { id }, relations: ['category'] });
+    return this.productRepository.findOne({
+      where: { id },
+      relations: ["category"],
+    });
   }
 
   async create(data: Partial<Product>): Promise<Product> {
@@ -34,8 +40,50 @@ export class ProductService {
 
   async delete(id: number): Promise<boolean> {
     const result = await this.productRepository.delete(id);
-    console.log('Delete result:', result);
+    console.log("Delete result:", result);
     if (result.affected === undefined) return false;
     return result.affected === null || result.affected > 0;
+  }
+
+  async findByCategory(
+    categoryId: number,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<[Product[], number]> {
+    const skip = (page - 1) * limit;
+    return this.productRepository.findAndCount({
+      where: { category: { id: categoryId } },
+      relations: ["category"],
+      skip,
+      take: limit,
+      order: { created_at: "DESC" },
+    });
+  }
+
+  async searchProducts(
+    searchTerm: string,
+    categoryId?: number,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<[Product[], number]> {
+    const skip = (page - 1) * limit;
+    const queryBuilder = this.productRepository
+      .createQueryBuilder("product")
+      .leftJoinAndSelect("product.category", "category");
+
+    if (searchTerm) {
+      queryBuilder.andWhere(
+        "(product.name ILIKE :searchTerm OR product.description ILIKE :searchTerm)",
+        { searchTerm: `%${searchTerm}%` }
+      );
+    }
+
+    if (categoryId) {
+      queryBuilder.andWhere("category.id = :categoryId", { categoryId });
+    }
+
+    queryBuilder.orderBy("product.created_at", "DESC").skip(skip).take(limit);
+
+    return queryBuilder.getManyAndCount();
   }
 }

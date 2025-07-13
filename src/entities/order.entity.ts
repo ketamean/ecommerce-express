@@ -6,25 +6,28 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-} from 'typeorm';
-import { User } from './user.entity';
-import { OrderDetail } from './order-detail.entity';
+} from "typeorm";
+import { User } from "./user.entity";
+import { OrderDetail } from "./order-detail.entity";
 
-@Entity('order')
+@Entity("order")
 export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'uuid', generated: 'uuid' })
+  @Column({ type: "uuid", generated: "uuid" })
   order_id!: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column("decimal", { precision: 10, scale: 2 })
   total_amount!: number;
 
   @Column()
   status!: string;
 
-  @Column('text')
+  @Column({ default: "COD" })
+  payment_method!: string;
+
+  @Column("text")
   shipping_address!: string;
 
   @Column({ unique: true, nullable: true })
@@ -36,7 +39,7 @@ export class Order {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @ManyToOne(() => User, (user) => user.orders, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.orders, { onDelete: "CASCADE" })
   user!: User;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)

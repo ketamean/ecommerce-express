@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn src/index.ts",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "seed:categories": "ts-node -r tsconfig-paths/register src/scripts/seed-categories.ts"
   },
   "keywords": [],
   "author": "",

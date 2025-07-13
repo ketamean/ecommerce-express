@@ -123,6 +123,7 @@ CREATE TABLE "order" (
     user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
     total_amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) NOT NULL, -- e.g., 'pending', 'processed', 'shipped'
+    payment_method VARCHAR(50) NOT NULL DEFAULT 'COD', -- e.g., 'COD', 'CREDIT_CARD', 'PAYPAL'
     shipping_address TEXT NOT NULL,
     payment_gateway_id VARCHAR(255) UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
