@@ -6,7 +6,7 @@ import helmet from "helmet";
 import cors from "cors";
 import errorHandler from '@middlewares/errorHandler';
 import { graphqlServer } from '@config/graphql';
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from '@as-integrations/express5';
 
 const app = express();
 
@@ -21,7 +21,7 @@ async function main() {
     // (req:Request, res:Response, next:Function) => {
     //   console.log(req)
     // },
-    expressMiddleware(server) as any,
+    expressMiddleware(server),
   );
 
   // health check
