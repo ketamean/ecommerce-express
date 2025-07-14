@@ -1,5 +1,6 @@
-import { ObjectType, Field, ID, Float, Int } from 'type-graphql';
-import { CategoryType } from '@modules/category/category.type';
+import { ObjectType, Field, ID, Float, Int } from "type-graphql";
+import { CategoryType } from "@modules/category/category.type";
+import { ProductImageType } from "./product-image.type";
 
 @ObjectType()
 export class Product {
@@ -23,6 +24,9 @@ export class Product {
 
   @Field(() => CategoryType, { nullable: true })
   category!: CategoryType;
+
+  @Field(() => [ProductImageType])
+  images!: ProductImageType[];
 
   @Field()
   created_at!: Date;

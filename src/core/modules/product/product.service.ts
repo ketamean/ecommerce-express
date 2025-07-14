@@ -17,14 +17,15 @@ export class ProductService {
     return this.productRepository.findAndCount({
       skip,
       take: limit,
-      relations: ["category"],
+      relations: ["category", "images"],
+      order: { created_at: "DESC" },
     });
   }
 
   async findById(id: number): Promise<Product | null> {
     return this.productRepository.findOne({
       where: { id },
-      relations: ["category"],
+      relations: ["category", "images"],
     });
   }
 
@@ -53,7 +54,7 @@ export class ProductService {
     const skip = (page - 1) * limit;
     return this.productRepository.findAndCount({
       where: { category: { id: categoryId } },
-      relations: ["category"],
+      relations: ["category", "images"],
       skip,
       take: limit,
       order: { created_at: "DESC" },
@@ -69,7 +70,8 @@ export class ProductService {
     const skip = (page - 1) * limit;
     const queryBuilder = this.productRepository
       .createQueryBuilder("product")
-      .leftJoinAndSelect("product.category", "category");
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.images", "images");
 
     if (searchTerm) {
       queryBuilder.andWhere(

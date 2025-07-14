@@ -119,6 +119,13 @@ query GetProductsByCategory($categoryId: Int!, $page: Int, $limit: Int) {
       id
       name
     }
+    images {
+      id
+      image_url
+      alt_text
+      is_thumbnail
+      created_at
+    }
     created_at
     updated_at
   }
@@ -261,6 +268,13 @@ query SearchProducts(
       id
       name
     }
+    images {
+      id
+      image_url
+      alt_text
+      is_thumbnail
+      created_at
+    }
     created_at
     updated_at
   }
@@ -292,6 +306,13 @@ query GetProductsByCategory($categoryId: Int!, $page: Int, $limit: Int) {
     category {
       id
       name
+    }
+    images {
+      id
+      image_url
+      alt_text
+      is_thumbnail
+      created_at
     }
     created_at
     updated_at
