@@ -240,6 +240,13 @@ query Products($page: Int, $limit: Int) {
       name
       description
     }
+    images {
+      id
+      image_url
+      alt_text
+      is_thumbnail
+      created_at
+    }
     created_at
     updated_at
   }
@@ -261,6 +268,13 @@ query Product($id: Int!) {
       id
       name
       description
+    }
+    images {
+      id
+      image_url
+      alt_text
+      is_thumbnail
+      created_at
     }
     created_at
     updated_at
