@@ -1,7 +1,7 @@
 // src/middlewares/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { verifyAccessToken, verifyRefreshToken, generateAccessToken, generateRefreshToken } from '@utils/jwt';
-import redisClient from '../config/database/redis';
+// import redisClient from '../config/database/redis';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -34,10 +34,10 @@ export const refreshToken = async (req: AuthenticatedRequest, res: Response) => 
     return res.sendStatus(401);
   }
 
-  const isTokenBlacklisted = await redisClient.get(`blacklist:${token}`);
-  if (isTokenBlacklisted) {
-    return res.sendStatus(403);
-  }
+  // const isTokenBlacklisted = await redisClient.get(`blacklist:${token}`);
+  // if (isTokenBlacklisted) {
+  //   return res.sendStatus(403);
+  // }
 
   const user = verifyRefreshToken(token);
   if (!user) {
@@ -45,7 +45,7 @@ export const refreshToken = async (req: AuthenticatedRequest, res: Response) => 
   }
   
   // RTR: Invalidate the old refresh token by adding it to a blacklist
-  await redisClient.set(`blacklist:${token}`, 'true', { 'EX': 365 * 24 * 60 * 60 });
+  // await redisClient.set(`blacklist:${token}`, 'true', { 'EX': 365 * 24 * 60 * 60 });
 
   const newAccessToken = generateAccessToken(user);
   const newRefreshToken = generateRefreshToken(user);
