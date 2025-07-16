@@ -14,13 +14,13 @@ dotenv.config();  // Load environment variables from .env file
 
 // const db_url = process.env.DB_URL || ''
 const db_host = process.env.DB_HOST || 'localhost';
-const db_port = process.env.DB_PORT || 5432;
-const db_username = process.env.DB_USERNAME || 'postgres';
+const db_port = process.env.DB_PORT || 3306;
+const db_username = process.env.DB_USERNAME || 'admin';
 const db_password = process.env.DB_PASSWORD || 'password';
 const is_dev = process.env.NODE_ENV === 'development' || false;
 
 const AppDataSource = new DataSource({
-  type: 'postgres',
+  type: 'mysql',
   host: db_host,
   port: Number(db_port),
   username: db_username,
