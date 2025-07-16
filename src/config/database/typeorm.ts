@@ -12,13 +12,21 @@ import { OrderDetail } from '@/entities/order-detail.entity';
 
 dotenv.config();  // Load environment variables from .env file 
 
-const db_url = process.env.DB_URL || ''
+// const db_url = process.env.DB_URL || ''
+const db_host = process.env.DB_HOST || 'localhost';
+const db_port = process.env.DB_PORT || 5432;
+const db_username = process.env.DB_USERNAME || 'postgres';
+const db_password = process.env.DB_PASSWORD || 'password';
 const is_dev = process.env.NODE_ENV === 'development' || false;
 
 const AppDataSource = new DataSource({
   type: 'postgres',
-  url: db_url,
-  synchronize: is_dev, // DEV only: automatically creates the database schema on every application launch
+  host: db_host,
+  port: Number(db_port),
+  username: db_username,
+  password: db_password,
+  database: process.env.DB_NAME || 'ecommerce',
+  synchronize: true,//is_dev, // DEV only: automatically creates the database schema on every application launch
   logging: true,
   entities: [
     User,

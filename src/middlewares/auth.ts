@@ -19,7 +19,8 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
     return res.sendStatus(401);
   }
 
-  const user = verifyAccessToken(token);
+  const user = verifyAccessToken(token);  // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiMTEzOGQ5Yy1jNDhlLTQ1MWYtYTQwNC1hMWY0NzRhMmI1NzIiLCJ1c2VybmFtZSI6InVzZXIxQGdtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NTI2Njc2NzAsImV4cCI6MTc1MjY2ODU3MH0.9QvPaZhqnWvYgGg_LEwH59D0c8xPJVea7ygo7YlM4bA
+  console.log("User", user)
   if (!user) {
     return res.sendStatus(403);
   }
