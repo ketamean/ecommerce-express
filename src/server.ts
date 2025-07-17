@@ -9,7 +9,7 @@ import { graphqlServer } from "@config/graphql";
 import { expressMiddleware } from "@as-integrations/express5";
 import { GraphQLContext } from "@modules/user/context";
 import authRoutes from "./routes/auth.routes";
-
+import { ProductService } from "./core/modules/product/product.service";
 const app = express();
 
 async function main() {
@@ -28,8 +28,10 @@ async function main() {
   );
 
   // health check
-  app.get("/health", (req: Request, res: Response) => {
-    res.status(200).send("OK");
+  app.get("/health", async (req: Request, res: Response) => {
+    const productService = new ProductService();
+    const products = await productService.findAll(1, 10);
+    res.status(200).send(products[0][0].images[0].image_url);
   });
 
   // Auth routes
