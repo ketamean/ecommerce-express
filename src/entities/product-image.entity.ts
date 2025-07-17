@@ -13,7 +13,6 @@ const cloudfront_domail = process.env.CLOUDFRONT_DOMAIN || '';
 const private_key_secret_name = 'cloudfront/privatekey';
 const region = 'us-east-1'; // The region of your Secrets Manager secret
 let cloudFrontPrivateKey: string;
-
 const initializePrivateKey = async (): Promise<void> => {
   try {
     const client = new SecretsManagerClient({ region: region });
