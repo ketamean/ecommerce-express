@@ -48,29 +48,38 @@ const getDbPassword = (): Promise<string> => {
   return signer.getAuthToken();
 };
 
-const AppDataSource = new DataSource({
-  type: 'mysql',
-  host: dbConfig.host,
-  port: dbConfig.port,
-  username: dbConfig.username,
-  database: dbConfig.database,
-  password: await (getDbPassword()),
-  synchronize: true,//is_dev, // DEV only: automatically creates the database schema on every application launch
-  logging: true,
-  entities: [
-    User,
-    Category,
-    Product,
-    ProductImage,
-    Cart,
-    CartDetail,
-    Order,
-    OrderDetail,
-  ],
-  subscribers: [],
-  migrations: [],
-  ssl: {
-    rejectUnauthorized: true, // Disable SSL verification for development
-  }
-});
+const AppDataSource = (async () => {
+  const password = await getDbPassword();
+  const dataSource = new DataSource({
+    type: 'mysql',
+    host: dbConfig.host,
+    port: dbConfig.port,
+    username: dbConfig.username,
+    database: dbConfig.database,
+    password: password, // Get the password using the signer
+    synchronize: true,//is_dev, // DEV only: automatically creates the database schema on every application launch
+    logging: true,
+    entities: [
+      User,
+      Category,
+      Product,
+      ProductImage,
+      Cart,
+      CartDetail,
+      Order,
+      OrderDetail,
+    ],
+    subscribers: [],
+    migrations: [],
+    ssl: {
+      rejectUnauthorized: true, // Disable SSL verification for development
+    }
+  });
+
+  await dataSource.initialize()
+
+  return dataSource;
+})();
+
 export default AppDataSource;
+export { getDbPassword };

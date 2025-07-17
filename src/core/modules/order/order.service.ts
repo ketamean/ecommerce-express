@@ -5,7 +5,7 @@ import { Cart } from "@entities/cart.entity";
 import { CartDetail } from "@entities/cart-detail.entity";
 import { Product } from "@entities/product.entity";
 import { User } from "@entities/user.entity";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { CreateOrderInput, PaymentMethod, OrderStatus } from "./order.input";
 
 export class OrderService {
@@ -16,13 +16,23 @@ export class OrderService {
   private productRepository: Repository<Product>;
   private userRepository: Repository<User>;
 
-  constructor() {
-    this.orderRepository = AppDataSource.getRepository(Order);
-    this.orderDetailRepository = AppDataSource.getRepository(OrderDetail);
-    this.cartRepository = AppDataSource.getRepository(Cart);
-    this.cartDetailRepository = AppDataSource.getRepository(CartDetail);
-    this.productRepository = AppDataSource.getRepository(Product);
-    this.userRepository = AppDataSource.getRepository(User);
+  private dataSource: DataSource;
+
+  constructor(dataSource: DataSource) {
+    this.orderRepository = dataSource.getRepository(Order);
+    this.orderDetailRepository = dataSource.getRepository(OrderDetail);
+    this.cartRepository = dataSource.getRepository(Cart);
+    this.cartDetailRepository = dataSource.getRepository(CartDetail);
+    this.productRepository = dataSource.getRepository(Product);
+    this.userRepository = dataSource.getRepository(User);
+    this.dataSource = dataSource
+  }
+
+  public static async create(): Promise<OrderService> {
+    // Await the AppDataSource promise to get the initialized DataSource
+    const dataSource = await AppDataSource;
+    // Create and return a new instance of the service
+    return new OrderService(dataSource);
   }
 
   // Create order from cart
@@ -58,7 +68,7 @@ export class OrderService {
     }
 
     // Start transaction
-    return AppDataSource.transaction(async (manager) => {
+    return this.dataSource.transaction(async (manager) => {
       // Check inventory for all items
       for (const cartItem of activeCartItems) {
         const product = await manager.findOne(Product, {
@@ -217,7 +227,7 @@ export class OrderService {
     }
 
     // Start transaction to restore inventory and update order
-    return AppDataSource.transaction(async (manager) => {
+    return this.dataSource.transaction(async (manager) => {
       // Restore inventory for all order items
       for (const orderDetail of order.orderDetails) {
         await manager.increment(

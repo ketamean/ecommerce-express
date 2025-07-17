@@ -1,6 +1,6 @@
 import AppDataSource from "@config/database/typeorm";
 import { User } from "@entities/user.entity";
-import { Repository } from "typeorm";
+import { Repository, DataSource } from "typeorm";
 import { RegisterInput, UpdateProfileInput } from "./user.input";
 import { generateAccessToken, generateRefreshToken } from "@utils/jwt";
 import * as bcrypt from "bcryptjs";
@@ -10,8 +10,15 @@ const pepper = process.env.PASSWORD_HASHING_PEPPER || "defaultPepper";
 export class UserService {
   private userRepository: Repository<User>;
 
-  constructor() {
-    this.userRepository = AppDataSource.getRepository(User);
+  constructor(dataSource: DataSource) {
+    this.userRepository = dataSource.getRepository(User);
+  }
+
+  public static async create(): Promise<UserService> {
+    // Await the AppDataSource promise to get the initialized DataSource
+    const dataSource = await AppDataSource;
+    // Create and return a new instance of the service
+    return new UserService(dataSource);
   }
 
   async register(

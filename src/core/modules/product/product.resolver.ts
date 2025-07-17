@@ -5,25 +5,26 @@ import { ProductInput } from "./product.input";
 
 @Resolver(Product)
 export class ProductResolver {
-  private productService = new ProductService();
-
   @Query(() => [Product])
   async products(
     @Arg("page", () => Int, { defaultValue: 1 }) page: number,
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number
   ): Promise<Product[]> {
-    const [products] = await this.productService.findAll(page, limit);
+    const productService = await ProductService.create();
+    const [products] = await productService.findAll(page, limit);
     return products;
   }
 
   @Query(() => Product, { nullable: true })
   async product(@Arg("id", () => Int) id: number): Promise<Product | null> {
-    return this.productService.findById(id);
+    const productService = await ProductService.create();
+    return productService.findById(id);
   }
 
   @Mutation(() => Product)
   async createProduct(@Arg("data") data: ProductInput): Promise<Product> {
-    return this.productService.create(data);
+    const productService = await ProductService.create();
+    return productService.create(data);
   }
 
   @Mutation(() => Product, { nullable: true })
@@ -31,12 +32,14 @@ export class ProductResolver {
     @Arg("id", () => Int) id: number,
     @Arg("data") data: ProductInput
   ): Promise<Product | null> {
-    return this.productService.update(id, data);
+    const productService = await ProductService.create();
+    return productService.update(id, data);
   }
 
   @Mutation(() => Boolean)
   async deleteProduct(@Arg("id", () => Int) id: number): Promise<boolean> {
-    return this.productService.delete(id);
+    const productService = await ProductService.create();
+    return productService.delete(id);
   }
 
   @Query(() => [Product])
@@ -45,7 +48,8 @@ export class ProductResolver {
     @Arg("page", () => Int, { defaultValue: 1 }) page: number,
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number
   ): Promise<Product[]> {
-    const [products] = await this.productService.findByCategory(
+    const productService = await ProductService.create();
+    const [products] = await productService.findByCategory(
       categoryId,
       page,
       limit
@@ -60,7 +64,8 @@ export class ProductResolver {
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number,
     @Arg("categoryId", () => Int, { nullable: true }) categoryId?: number
   ): Promise<Product[]> {
-    const [products] = await this.productService.searchProducts(
+    const productService = await ProductService.create();
+    const [products] = await productService.searchProducts(
       searchTerm,
       categoryId,
       page,

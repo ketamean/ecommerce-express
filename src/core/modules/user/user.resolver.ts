@@ -52,11 +52,10 @@ function AuthMiddleware(requireAuth: boolean = true) {
 
 @Resolver(UserType)
 export class UserResolver {
-  private userService = new UserService();
-
   @Mutation(() => AuthResponse)
   async register(@Arg("data") data: RegisterInput): Promise<AuthResponse> {
-    const result = await this.userService.register(data);
+    const userService = await UserService.create();
+    const result = await userService.register(data);
     return {
       user: result.user,
       accessToken: result.accessToken,
@@ -66,7 +65,8 @@ export class UserResolver {
 
   @Mutation(() => AuthResponse)
   async login(@Arg("data") data: LoginInput): Promise<AuthResponse> {
-    const result = await this.userService.login(data.email, data.password);
+    const userService = await UserService.create();
+    const result = await userService.login(data.email, data.password);
     return {
       user: result.user,
       accessToken: result.accessToken,
@@ -80,8 +80,8 @@ export class UserResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const user = await this.userService.findByUserId(context.user.userId);
+    const userService = await UserService.create();
+    const user = await userService.findByUserId(context.user.userId);
     return user;
   }
 
@@ -94,8 +94,8 @@ export class UserResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    return this.userService.updateProfile(context.user.userId, data);
+    const userService = await UserService.create();
+    return userService.updateProfile(context.user.userId, data);
   }
 
   @Mutation(() => Boolean)
@@ -107,8 +107,8 @@ export class UserResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    return this.userService.changePassword(
+    const userService = await UserService.create();
+    return userService.changePassword(
       context.user.userId,
       data.currentPassword,
       data.newPassword
@@ -122,6 +122,7 @@ export class UserResolver {
       throw new Error("Authentication required");
     }
 
-    return this.userService.deleteAccount(context.user.userId);
+    const userService = await UserService.create();
+    return userService.deleteAccount(context.user.userId);
   }
 }

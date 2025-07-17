@@ -3,7 +3,7 @@ import { Cart } from "@entities/cart.entity";
 import { CartDetail } from "@entities/cart-detail.entity";
 import { Product } from "@entities/product.entity";
 import { User } from "@entities/user.entity";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import {
   AddToCartInput,
   UpdateCartItemInput,
@@ -16,11 +16,18 @@ export class CartService {
   private productRepository: Repository<Product>;
   private userRepository: Repository<User>;
 
-  constructor() {
-    this.cartRepository = AppDataSource.getRepository(Cart);
-    this.cartDetailRepository = AppDataSource.getRepository(CartDetail);
-    this.productRepository = AppDataSource.getRepository(Product);
-    this.userRepository = AppDataSource.getRepository(User);
+  constructor(dataSource: DataSource) {
+    this.cartRepository = dataSource.getRepository(Cart);
+    this.cartDetailRepository = dataSource.getRepository(CartDetail);
+    this.productRepository = dataSource.getRepository(Product);
+    this.userRepository = dataSource.getRepository(User);
+  }
+
+  public static async create(): Promise<CartService> {
+    // Await the AppDataSource promise to get the initialized DataSource
+    const dataSource = await AppDataSource;
+    // Create and return a new instance of the service
+    return new CartService(dataSource);
   }
 
   // Get or create cart for user

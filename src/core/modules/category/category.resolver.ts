@@ -65,14 +65,13 @@ function AdminMiddleware() {
 
 @Resolver(CategoryType)
 export class CategoryResolver {
-  private categoryService = new CategoryService();
-
   @Query(() => [CategoryType])
   async categories(
     @Arg("page", () => Int, { defaultValue: 1 }) page: number,
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number
   ): Promise<CategoryType[]> {
-    const [categories] = await this.categoryService.findAll(page, limit);
+    const categoryService = await CategoryService.create();
+    const [categories] = await categoryService.findAll(page, limit);
     return categories;
   }
 
@@ -80,14 +79,16 @@ export class CategoryResolver {
   async category(
     @Arg("id", () => Int) id: number
   ): Promise<CategoryType | null> {
-    return this.categoryService.findById(id);
+    const categoryService = await CategoryService.create();
+    return categoryService.findById(id);
   }
 
   @Query(() => CategoryType, { nullable: true })
   async categoryByName(
     @Arg("name") name: string
   ): Promise<CategoryType | null> {
-    return this.categoryService.findByName(name);
+    const categoryService = await CategoryService.create();
+    return categoryService.findByName(name);
   }
 
   @Query(() => [CategoryType])
@@ -96,7 +97,8 @@ export class CategoryResolver {
     @Arg("page", () => Int, { defaultValue: 1 }) page: number,
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number
   ): Promise<CategoryType[]> {
-    const [categories] = await this.categoryService.search(
+    const categoryService = await CategoryService.create();
+    const [categories] = await categoryService.search(
       searchInput,
       page,
       limit
@@ -110,7 +112,8 @@ export class CategoryResolver {
     @Arg("page", () => Int, { defaultValue: 1 }) page: number,
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number
   ): Promise<Product[]> {
-    const [products] = await this.categoryService.getProductsByCategory(
+    const categoryService = await CategoryService.create();
+    const [products] = await categoryService.getProductsByCategory(
       categoryId,
       page,
       limit
@@ -125,7 +128,8 @@ export class CategoryResolver {
     @Arg("data") data: CategoryInput,
     @Ctx() context: GraphQLContext
   ): Promise<CategoryType> {
-    return this.categoryService.create(data);
+    const categoryService = await CategoryService.create();
+    return categoryService.create(data);
   }
 
   @Mutation(() => CategoryType, { nullable: true })
@@ -136,7 +140,8 @@ export class CategoryResolver {
     @Arg("data") data: CategoryInput,
     @Ctx() context: GraphQLContext
   ): Promise<CategoryType | null> {
-    return this.categoryService.update(id, data);
+    const categoryService = await CategoryService.create();
+    return categoryService.update(id, data);
   }
 
   @Mutation(() => Boolean)
@@ -146,6 +151,7 @@ export class CategoryResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() context: GraphQLContext
   ): Promise<boolean> {
-    return this.categoryService.delete(id);
+    const categoryService = await CategoryService.create();
+    return categoryService.delete(id);
   }
 }

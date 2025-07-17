@@ -1,16 +1,23 @@
 import AppDataSource from "@config/database/typeorm";
 import { Category } from "@entities/category.entity";
 import { Product } from "@entities/product.entity";
-import { Repository, ILike } from "typeorm";
+import { Repository, ILike, DataSource } from "typeorm";
 import { CategoryInput, CategorySearchInput } from "./category.input";
 
 export class CategoryService {
   private categoryRepository: Repository<Category>;
   private productRepository: Repository<Product>;
 
-  constructor() {
-    this.categoryRepository = AppDataSource.getRepository(Category);
-    this.productRepository = AppDataSource.getRepository(Product);
+  constructor(dataSource: DataSource) {
+    this.categoryRepository = dataSource.getRepository(Category);
+    this.productRepository = dataSource.getRepository(Product);
+  }
+
+  public static async create(): Promise<CategoryService> {
+    // Await the AppDataSource promise to get the initialized DataSource
+    const dataSource = await AppDataSource;
+    // Create and return a new instance of the service
+    return new CategoryService(dataSource);
   }
 
   async findAll(

@@ -40,8 +40,6 @@ function AuthMiddleware(requireAuth: boolean = true) {
 
 @Resolver(OrderType)
 export class OrderResolver {
-  private orderService = new OrderService();
-
   @Mutation(() => OrderType)
   @AuthMiddleware(true)
   async createOrderFromCart(
@@ -51,14 +49,14 @@ export class OrderResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const order = await this.orderService.createOrderFromCart(
+    const orderService = await OrderService.create();
+    const order = await orderService.createOrderFromCart(
       context.user.userId,
       input
     );
 
     // Calculate totals and add computed fields
-    const { totalItems } = await this.orderService.calculateOrderTotals(order);
+    const { totalItems } = await orderService.calculateOrderTotals(order);
 
     // Transform order details to include subtotal
     const orderDetailsWithSubtotal =
@@ -86,8 +84,8 @@ export class OrderResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const [orders, total] = await this.orderService.getUserOrders(
+    const orderService = await OrderService.create();
+    const [orders, total] = await orderService.getUserOrders(
       context.user.userId,
       page,
       limit
@@ -96,7 +94,7 @@ export class OrderResolver {
     // Transform orders to include computed fields
     const transformedOrders = await Promise.all(
       orders.map(async (order) => {
-        const { totalItems } = await this.orderService.calculateOrderTotals(
+        const { totalItems } = await orderService.calculateOrderTotals(
           order
         );
 
@@ -133,15 +131,15 @@ export class OrderResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const order = await this.orderService.getOrderById(context.user.userId, id);
+    const orderService = await OrderService.create();
+    const order = await orderService.getOrderById(context.user.userId, id);
 
     if (!order) {
       return null;
     }
 
     // Calculate totals and add computed fields
-    const { totalItems } = await this.orderService.calculateOrderTotals(order);
+    const { totalItems } = await orderService.calculateOrderTotals(order);
 
     // Transform order details to include subtotal
     const orderDetailsWithSubtotal =
@@ -168,11 +166,12 @@ export class OrderResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
+    const orderService = await OrderService.create();
 
-    const order = await this.orderService.cancelOrder(context.user.userId, id);
+    const order = await orderService.cancelOrder(context.user.userId, id);
 
     // Calculate totals and add computed fields
-    const { totalItems } = await this.orderService.calculateOrderTotals(order);
+    const { totalItems } = await orderService.calculateOrderTotals(order);
 
     // Transform order details to include subtotal
     const orderDetailsWithSubtotal =

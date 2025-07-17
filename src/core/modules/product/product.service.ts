@@ -1,12 +1,19 @@
 import AppDataSource from "@config/database/typeorm";
 import { Product } from "@entities/product.entity";
-import { Repository } from "typeorm";
+import { Repository, DataSource } from "typeorm";
 
 export class ProductService {
   private productRepository: Repository<Product>;
 
-  constructor() {
-    this.productRepository = AppDataSource.getRepository(Product);
+  constructor(dataSource: DataSource) {
+    this.productRepository = dataSource.getRepository(Product);
+  }
+
+  public static async create(): Promise<ProductService> {
+    // Await the AppDataSource promise to get the initialized DataSource
+    const dataSource = await AppDataSource;
+    // Create and return a new instance of the service
+    return new ProductService(dataSource);
   }
 
   async findAll(

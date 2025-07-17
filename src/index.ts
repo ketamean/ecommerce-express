@@ -2,7 +2,7 @@ import AppDataSource from "@config/database/typeorm";
 import { app } from '@/server';
 
 async function init() {
-  await AppDataSource.initialize()
+  const dataSource = await AppDataSource
 
   console.log('Data Source has been initialized!');
   const port = process.env.PORT || 3000;

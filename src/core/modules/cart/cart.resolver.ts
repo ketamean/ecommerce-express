@@ -44,7 +44,6 @@ function AuthMiddleware(requireAuth: boolean = true) {
 
 @Resolver(CartType)
 export class CartResolver {
-  private cartService = new CartService();
 
   @Query(() => CartType, { nullable: true })
   @AuthMiddleware(true)
@@ -52,8 +51,8 @@ export class CartResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const cart = await this.cartService.getCart(context.user.userId);
+    const cartService = await CartService.create();
+    const cart = await cartService.getCart(context.user.userId);
 
     if (!cart) {
       return null;
@@ -61,7 +60,7 @@ export class CartResolver {
 
     // Calculate totals and add computed fields
     const { totalAmount, totalItems } =
-      await this.cartService.calculateCartTotals(cart);
+      await cartService.calculateCartTotals(cart);
 
     // Transform cart details to include subtotal
     const cartDetailsWithSubtotal =
@@ -87,12 +86,12 @@ export class CartResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const cart = await this.cartService.addToCart(context.user.userId, input);
+    const cartService = await CartService.create();
+    const cart = await cartService.addToCart(context.user.userId, input);
 
     // Calculate totals and add computed fields
     const { totalAmount, totalItems } =
-      await this.cartService.calculateCartTotals(cart);
+      await cartService.calculateCartTotals(cart);
 
     // Transform cart details to include subtotal
     const cartDetailsWithSubtotal =
@@ -118,15 +117,15 @@ export class CartResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const cart = await this.cartService.updateCartItem(
+    const cartService = await CartService.create();
+    const cart = await cartService.updateCartItem(
       context.user.userId,
       input
     );
 
     // Calculate totals and add computed fields
     const { totalAmount, totalItems } =
-      await this.cartService.calculateCartTotals(cart);
+      await cartService.calculateCartTotals(cart);
 
     // Transform cart details to include subtotal
     const cartDetailsWithSubtotal =
@@ -152,15 +151,15 @@ export class CartResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    const cart = await this.cartService.removeFromCart(
+    const cartService = await CartService.create();
+    const cart = await cartService.removeFromCart(
       context.user.userId,
       input
     );
 
     // Calculate totals and add computed fields
     const { totalAmount, totalItems } =
-      await this.cartService.calculateCartTotals(cart);
+      await cartService.calculateCartTotals(cart);
 
     // Transform cart details to include subtotal
     const cartDetailsWithSubtotal =
@@ -183,7 +182,7 @@ export class CartResolver {
     if (!context.user) {
       throw new Error("Authentication required");
     }
-
-    return this.cartService.clearCart(context.user.userId);
+    const cartService = await CartService.create();
+    return cartService.clearCart(context.user.userId);
   }
 }
