@@ -732,7 +732,7 @@ export default async function seedProducts() {
     await productImageRepository.save(
       productImageRepository.create({
         is_thumbnail: true,
-        image_url: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        image_url: "e07d38fc982a4fdb3e990160e91fcbea.jpg",
         alt_text: "pic",
         product: newProduct[0],
       })
