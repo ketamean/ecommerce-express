@@ -9,10 +9,14 @@ import { Cart } from '@/entities/cart.entity';
 import { CartDetail } from '@/entities/cart-detail.entity';
 import { Order } from '@/entities/order.entity';
 import { OrderDetail } from '@/entities/order-detail.entity';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();  // Load environment variables from .env file 
 
 // const db_url = process.env.DB_URL || ''
+const rdsCa = fs.readFileSync(path.join(__dirname, '../../rds-ca-2019-root.pem'), 'utf-8');
+
 const db_host = process.env.DB_HOST || 'localhost';
 const db_port = process.env.DB_PORT || 3306;
 const db_username = process.env.DB_USERNAME || 'admin';
@@ -40,5 +44,9 @@ const AppDataSource = new DataSource({
   ],
   subscribers: [],
   migrations: [],
+  ssl: {
+    ca: rdsCa,
+    rejectUnauthorized: true
+  }
 });
 export default AppDataSource;
