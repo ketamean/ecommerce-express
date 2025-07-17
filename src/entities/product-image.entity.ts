@@ -20,7 +20,7 @@ const initializePrivateKey = async (): Promise<void> => {
     const response = await client.send(command);
 
     if (response.SecretString) {
-      cloudFrontPrivateKey = JSON.parse(response.SecretString)["privateKey"].replace(/\\n/g, '\n');
+      // cloudFrontPrivateKey = JSON.parse(response.SecretString)["privateKey"].replace(/\\n/g, '\n');
       cloudFrontPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAuUbVxThsrdzbzz/jteoz+vvtkuOJmDs20+V6sKfspwRwogo7
 30UQXfPX6zzRfhIBP5jDE2XjXiRPOimfnpXK3YuhMWtyoY/OkBC1W3ETN3qVAQrk

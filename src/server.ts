@@ -31,7 +31,7 @@ async function main() {
   app.get("/health", async (req: Request, res: Response) => {
     const productService = new ProductService();
     const products = await productService.findAll(1, 10);
-    res.status(200).send(products[0][0].images[0].image_url);
+    return res.status(200).send(products[0][0].images[0].image_url);
   });
 
   // Auth routes

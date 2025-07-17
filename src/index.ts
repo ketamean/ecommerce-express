@@ -1,6 +1,10 @@
 import AppDataSource from "@config/database/typeorm";
 import { app } from '@/server';
 import { initializePrivateKey } from "./entities/product-image.entity";
+import dotenv from 'dotenv';
+
+dotenv.config();  // Load environment variables from .env file 
+
 async function init() {
   await AppDataSource.initialize()
   await initializePrivateKey()
