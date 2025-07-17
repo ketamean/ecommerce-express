@@ -16,6 +16,8 @@
     "@apollo/gateway": "^2.11.2",
     "@apollo/server": "^4.12.2",
     "@as-integrations/express5": "^1.1.1",
+    "@aws-sdk/client-secrets-manager": "^3.846.0",
+    "@aws-sdk/cloudfront-signer": "^3.821.0",
     "@types/redis": "^4.0.10",
     "apollo-server": "^3.13.0",
     "bcrypt": "^6.0.0",

@@ -14,19 +14,42 @@ export class ProductService {
     limit: number = 10
   ): Promise<[Product[], number]> {
     const skip = (page - 1) * limit;
-    return this.productRepository.findAndCount({
+    const [products, count] = await this.productRepository.findAndCount({
       skip,
       take: limit,
       relations: ["category", "images"],
       order: { created_at: "DESC" },
     });
+
+    const imageLinkModifiedProducts = products.map((product) => {
+      product.images = product.images.map((image) => {
+        if (image.image_url) {
+          image.image_url = image.getSignedUrl() || "";
+        }
+        return image;
+      });
+      return product;
+    })
+    return [imageLinkModifiedProducts, count]
   }
 
   async findById(id: number): Promise<Product | null> {
-    return this.productRepository.findOne({
+    const product = await this.productRepository.findOne({
       where: { id },
       relations: ["category", "images"],
     });
+    if (!product) return null;
+    product.images = product.images.map((image) => {
+      if (image.image_url) {
+        image.image_url = image.getSignedUrl() || "";
+      }
+      return image;
+    });
+    return product;
+    // return this.productRepository.findOne({
+    //   where: { id },
+    //   relations: ["category", "images"],
+    // });
   }
 
   async create(data: Partial<Product>): Promise<Product> {
@@ -51,14 +74,33 @@ export class ProductService {
     page: number = 1,
     limit: number = 10
   ): Promise<[Product[], number]> {
+    // const skip = (page - 1) * limit;
+    // return this.productRepository.findAndCount({
+    //   where: { category: { id: categoryId } },
+    //   relations: ["category", "images"],
+    //   skip,
+    //   take: limit,
+    //   order: { created_at: "DESC" },
+    // });
     const skip = (page - 1) * limit;
-    return this.productRepository.findAndCount({
+    const [products, count] = await this.productRepository.findAndCount({
       where: { category: { id: categoryId } },
       relations: ["category", "images"],
       skip,
       take: limit,
       order: { created_at: "DESC" },
     });
+
+    const imageLinkModifiedProducts = products.map((product) => {
+      product.images = product.images.map((image) => {
+        if (image.image_url) {
+          image.image_url = image.getSignedUrl() || "";
+        }
+        return image;
+      });
+      return product;
+    })
+    return [imageLinkModifiedProducts, count]
   }
 
   async searchProducts(
