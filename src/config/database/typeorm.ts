@@ -50,11 +50,11 @@ const getDbPassword = (): Promise<string> => {
 
 const AppDataSource = new DataSource({
   type: 'mysql',
-  host: db_host,
-  port: Number(db_port),
-  username: db_username,
-  password: db_password,
-  database: process.env.DB_NAME || 'ecommerce',
+  host: dbConfig.host,
+  port: dbConfig.port,
+  username: dbConfig.username,
+  database: dbConfig.database,
+  password: await (getDbPassword()),
   synchronize: true,//is_dev, // DEV only: automatically creates the database schema on every application launch
   logging: true,
   entities: [
@@ -69,5 +69,8 @@ const AppDataSource = new DataSource({
   ],
   subscribers: [],
   migrations: [],
+  ssl: {
+    rejectUnauthorized: true, // Disable SSL verification for development
+  }
 });
 export default AppDataSource;
