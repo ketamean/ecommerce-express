@@ -90,7 +90,7 @@ export class ProductImage {
     const expiration = new Date()
     expiration.setMinutes(expiration.getMinutes() + 15); // 15 minutes expiration
     const s3ObjectUrl = `https://${cloudfront_domain}/${imagePath}`;
-
+    
     return getSignedUrl({
       url: s3ObjectUrl,
       dateLessThan: expiration,
