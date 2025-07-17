@@ -172,4 +172,32 @@ export class ProductService {
 
     return [imageLinkModifiedProducts, count];
   }
+
+  async searchProducts(
+    searchTerm: string,
+    categoryId?: number,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<[Product[], number]> {
+    const skip = (page - 1) * limit;
+    const queryBuilder = this.productRepository
+      .createQueryBuilder("product")
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.images", "images");
+
+    if (searchTerm) {
+      queryBuilder.andWhere(
+        "(product.name ILIKE :searchTerm OR product.description ILIKE :searchTerm)",
+        { searchTerm: `%${searchTerm}%` }
+      );
+    }
+
+    if (categoryId) {
+      queryBuilder.andWhere("category.id = :categoryId", { categoryId });
+    }
+
+    queryBuilder.orderBy("product.created_at", "DESC").skip(skip).take(limit);
+
+    return queryBuilder.getManyAndCount();
+  }
 }
