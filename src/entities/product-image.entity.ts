@@ -20,7 +20,7 @@ const initializePrivateKey = async (): Promise<void> => {
     const response = await client.send(command);
 
     if (response.SecretString) {
-      cloudFrontPrivateKey = response.SecretString;
+      cloudFrontPrivateKey = JSON.parse(response.SecretString)["privateKey"].replace(/\\n/g, '\n');
       console.log('Successfully fetched and cached CloudFront private key.');
     } else {
       throw new Error('SecretString is empty.');
