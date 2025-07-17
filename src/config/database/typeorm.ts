@@ -24,14 +24,14 @@ const db_password = process.env.DB_PASSWORD || 'password';
 const is_dev = process.env.NODE_ENV === 'development' || false;
 
 const AppDataSource = new DataSource({
-  type: 'postgres',
-  url: 'postgresql://postgres.adyeqkylwndvuuqwltha:mz1uAudlT1Rz75t8@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres',
-  // host: db_host,
-  // port: Number(db_port),
-  // username: db_username,
-  // password: db_password,
-  database: 'cloud-ecom',//process.env.DB_NAME || 'ecommerce',
-  synchronize: true,//is_dev, // DEV only: automatically creates the database schema on every application launch
+  type: 'mysql',
+  // url: 'postgresql://postgres.adyeqkylwndvuuqwltha:mz1uAudlT1Rz75t8@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres',
+  host: db_host,
+  port: Number(db_port),
+  username: db_username,
+  password: db_password,
+  database: process.env.DB_NAME || 'ecommerce',
+  synchronize: false,//is_dev, // DEV only: automatically creates the database schema on every application launch
   logging: true,
   entities: [
     User,

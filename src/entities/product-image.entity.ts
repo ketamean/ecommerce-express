@@ -9,7 +9,7 @@ import { Product } from './product.entity';
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
-const cloudfront_domail = process.env.CLOUDFRONT_DOMAIN || '';
+const cloudfront_domain = process.env.CLOUDFRONT_DOMAIN || '';
 const private_key_secret_name = 'cloudfront/privatekey';
 const region = 'us-east-1'; // The region of your Secrets Manager secret
 let cloudFrontPrivateKey: string;
@@ -62,7 +62,7 @@ export class ProductImage {
     const imagePath = this.image_url
     const expiration = new Date()
     expiration.setMinutes(expiration.getMinutes() + 15); // 15 minutes expiration
-    const s3ObjectUrl = `https://${cloudfront_domail}/${imagePath}`;
+    const s3ObjectUrl = `http://${cloudfront_domain}/${imagePath}`;
 
     return getSignedUrl({
       url: s3ObjectUrl,
