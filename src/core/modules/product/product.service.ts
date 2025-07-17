@@ -68,7 +68,7 @@ export class ProductService {
     })
     
     // Cache the result
-    await redisCacheClient.set(cacheKey, JSON.stringify([imageLinkModifiedProducts, count]), { EX: CACHE_EXPIRATION });
+    await redisCacheClient.set(cacheKey, JSON.stringify([products, count]), { EX: CACHE_EXPIRATION });
 
     return [imageLinkModifiedProducts, count];
   }
@@ -87,6 +87,10 @@ export class ProductService {
       where: { id },
       relations: ["category", "images"],
     });
+    if (!product) {
+      return null; // Product not found
+    }
+    await this.setProductInCache(product);
 
     if (product) {
       // 3. Populate signed URLs and store in cache before returning
@@ -96,7 +100,6 @@ export class ProductService {
         }
         return image;
       });
-      await this.setProductInCache(product);
     }
 
     return product;
@@ -168,7 +171,7 @@ export class ProductService {
       return product;
     })
 
-    await redisCacheClient.set(cacheKey, JSON.stringify([imageLinkModifiedProducts, count]), { EX: CACHE_EXPIRATION });
+    await redisCacheClient.set(cacheKey, JSON.stringify([products, count]), { EX: CACHE_EXPIRATION });
 
     return [imageLinkModifiedProducts, count];
   }
